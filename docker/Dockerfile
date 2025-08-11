@@ -15,10 +15,12 @@ RUN apt-get update && apt-get install -y \
     ros-humble-ros2-control ros-humble-ros2-controllers \
     ros-humble-moveit ros-humble-depthai-ros \
     ros-humble-behaviortree-cpp* ros-humble-ros-testing freeglut3-dev ros-humble-moveit-resources-* \
+    ros-humble-realsense2-camera \
     libprotobuf-dev protobuf-compiler ros-humble-tf*
     
-RUN apt-get install -y python3-pip python3-colcon-common-extensions python3-pybind11 cmake
-    
+RUN apt-get install -y python3-pip python3-colcon-common-extensions python3-pybind11 cmake libmodbus-dev libmongoclient-dev wget\
+    && wget https://github.com/mikefarah/yq/releases/download/v4.35.1/yq_linux_amd64 -O /usr/bin/yq \
+    && chmod +x /usr/bin/yq
 
 # Python dependencies
 RUN pip3 install --upgrade scipy depthai trimesh transforms3d ur_rtde
@@ -42,9 +44,10 @@ WORKDIR /home/$USER_NAME/static/drims2_ws/src
 RUN git clone https://github.com/CNR-STIIMA-IRAS/drims2_motion_control.git
 RUN vcs import < drims2_motion_control/dependencies.repos
 RUN git clone https://github.com/CNR-STIIMA-IRAS/drims2_dice_simulator.git
-RUN git clone https://github.com/CNR-STIIMA-IRAS/drims2_cells
-COPY deps.repos drims2_cells/deps.repos
-RUN vcs import < drims2_cells/deps.repos
+RUN git clone https://github.com/CNR-STIIMA-IRAS/drims2_cells.git
+RUN yq 'del(.repositories."abb_libs/abb_librws_2.0", .repositories."abb_libs/abb_omnicore_ros2")' \
+    drims2_cells/deps.repos > drims2_cells/deps.filtered.repos
+RUN vcs import < drims2_cells/deps.filtered.repos
 
 COPY abb_librws_2.0 ./abb_librws_2.0
 COPY abb_omnicore_ros2 ./abb_omnicore_ros2
@@ -58,11 +61,9 @@ RUN chown -R $USER_NAME:$GROUP_NAME /home/$USER_NAME
 USER $USER_NAME
 WORKDIR /home/$USER_NAME/static/drims2_ws
 
-
 # 1st build: just build interfaces and messages
 SHELL ["/bin/bash", "-c"]
 RUN source /opt/ros/humble/setup.bash && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release #--packages-select drims2_msgs
-
 
 # Add ROS and workspace to bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
