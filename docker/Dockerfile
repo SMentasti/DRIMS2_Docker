@@ -21,7 +21,7 @@ RUN apt-get install -y python3-pip python3-colcon-common-extensions python3-pybi
     
 
 # Python dependencies
-RUN pip3 install --upgrade scipy depthai trimesh transforms3d
+RUN pip3 install --upgrade scipy depthai trimesh transforms3d ur_rtde
 
 # Create user and group with correct IDs
 ARG GROUP_NAME=drims2
