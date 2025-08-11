@@ -39,7 +39,7 @@ RUN mkdir -p /home/$USER_NAME/static/drims2_ws/src
 WORKDIR /home/$USER_NAME/static/drims2_ws/src
 
 # Clone code as root
-RUN git clone https://github.com/SamueleSandrini/drims2_motion_control.git
+RUN git clone https://github.com/CNR-STIIMA-IRAS/drims2_motion_control.git
 RUN vcs import < drims2_motion_control/dependencies.repos
 RUN git clone https://github.com/CNR-STIIMA-IRAS/drims2_dice_simulator.git
 RUN git clone https://github.com/CNR-STIIMA-IRAS/drims2_cells
