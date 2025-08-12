@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     libboost-all-dev \
     ros-humble-ros2-control ros-humble-ros2-controllers \
-    ros-humble-moveit ros-humble-depthai-ros \
+    ros-humble-moveit ros-humble-depthai-ros ros-humble-moveit-ros-control-interface \
     ros-humble-behaviortree-cpp* ros-humble-ros-testing freeglut3-dev ros-humble-moveit-resources-* \
     ros-humble-realsense2-camera \
     ros-humble-ur-* \
