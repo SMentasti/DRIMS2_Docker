@@ -8,7 +8,8 @@ RUN echo 'tzdata tzdata/Areas select Etc' | debconf-set-selections \
 
 # Base tools
 RUN apt-get update && apt-get install -y \
-    build-essential nano tmux iputils-ping gdb cmake git openssl libssl-dev libmysqlclient-dev \
+    build-essential nano tmux iputils-ping gdb cmake git \
+    openssl libssl-dev libmysqlclient-dev xvfb \
     python3-colcon-common-extensions \
     python3-pip \
     libboost-all-dev \
@@ -16,8 +17,10 @@ RUN apt-get update && apt-get install -y \
     ros-humble-moveit ros-humble-depthai-ros \
     ros-humble-behaviortree-cpp* ros-humble-ros-testing freeglut3-dev ros-humble-moveit-resources-* \
     ros-humble-realsense2-camera \
+    ros-humble-ur-* \
+    ros-humble-omni-base* ros-humble-play-motion2 ros-humble-diagnostic-aggregator ros-humble-gazebo*\
     libprotobuf-dev protobuf-compiler ros-humble-tf*
-    
+
 RUN apt-get install -y python3-pip python3-colcon-common-extensions python3-pybind11 cmake libmodbus-dev libmongoclient-dev wget\
     && wget https://github.com/mikefarah/yq/releases/download/v4.35.1/yq_linux_amd64 -O /usr/bin/yq \
     && chmod +x /usr/bin/yq
@@ -65,8 +68,10 @@ WORKDIR /home/$USER_NAME/static/drims2_ws
 SHELL ["/bin/bash", "-c"]
 RUN source /opt/ros/humble/setup.bash && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release #--packages-select drims2_msgs
 
-# Add ROS and workspace to bashrc
+# Add ROS, workspace and Gazebo to bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+RUN echo "source /usr/share/gazebo/setup.bash" >> ~/.bashrc
+RUN echo "export LIBGL_ALWAYS_SOFTWARE=1" >> ~/.bashrc
 RUN echo "if [ -f ~/static/drims2_ws/install/setup.bash ]; then source ~/static/drims2_ws/install/setup.bash; fi" >> ~/.bashrc
 
 # Add the check script
