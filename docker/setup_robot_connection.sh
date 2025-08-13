@@ -5,7 +5,7 @@
 # ========= CONFIG: set fixed peers per robot here =========
 # Space-separated list of peer IPs per robot.
 UR_2F_PEERS="192.168.254.100"          # UR robots on 192.168.254.x
-TIAGO_PEERS="10.68.0.50"               # Tiago robots on 10.68.0.x (EDIT as needed)
+TIAGO_PEERS="10.68.0.1"               # Tiago robots on 10.68.0.x (EDIT as needed)
 # ==========================================================
 
 UR_PFX="192.168.254."
