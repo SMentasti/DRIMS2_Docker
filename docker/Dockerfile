@@ -19,7 +19,9 @@ RUN apt-get update && apt-get install -y \
     ros-humble-realsense2-camera \
     ros-humble-ur-* \
     ros-humble-omni-base* ros-humble-play-motion2 ros-humble-diagnostic-aggregator ros-humble-gazebo*\
-    libprotobuf-dev protobuf-compiler ros-humble-tf*
+    libprotobuf-dev protobuf-compiler ros-humble-tf* \
+    ros-humble-rmw-cyclonedds-cpp \
+    net-tools iproute2
 
 RUN apt-get install -y python3-pip python3-colcon-common-extensions python3-pybind11 cmake libmodbus-dev libmongoclient-dev wget\
     && wget https://github.com/mikefarah/yq/releases/download/v4.35.1/yq_linux_amd64 -O /usr/bin/yq \
@@ -74,10 +76,15 @@ RUN echo "source /usr/share/gazebo/setup.bash" >> ~/.bashrc
 RUN echo "export LIBGL_ALWAYS_SOFTWARE=1" >> ~/.bashrc
 RUN echo "if [ -f ~/static/drims2_ws/install/setup.bash ]; then source ~/static/drims2_ws/install/setup.bash; fi" >> ~/.bashrc
 
-# Add the check script
+# Configure cyclone configuration to bashrc
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
+
+# Add the check script and setup robot connection script to the container
 COPY check_script.sh /home/$USER_NAME/check_script.sh
+COPY setup_robot_connection.sh /home/$USER_NAME/setup_robot_connection.sh
 USER root
 RUN chmod +x /home/$USER_NAME/check_script.sh
+RUN chmod +x /home/$USER_NAME/setup_robot_connection.sh
 
 WORKDIR /home/$USER_NAME
 
